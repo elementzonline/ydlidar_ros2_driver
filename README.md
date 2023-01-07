@@ -66,16 +66,27 @@ ydlidar_ros2_driver depends on YDLidar-SDK library. If you have never installed 
 	
 ## Configure LiDAR
 
-      std::string str_optvalue = "/dev/ttyUSB0";
-      node->get_parameter("/dev/ttyUSB0", str_optvalue);
-      laser.setlidaropt(LidarPropSerialPort, str_optvalue.c_str(),   str_optvalue.size());
+To set the parameters of the lidar, you may need to edit the file [ydlidar_ros2_driver_node.cpp](src/ydlidar_ros2_driver_node.cpp) and modify the function ``node->get_parameter``. Make sure to include the quotation marks **("___")** around the parameter value, even if it is a **boolean**, **integer**, or **float**. *(Eventually, you may need to write the correct parameters in [ydlidar.yaml](params/ydlidar.yaml))*
 
+For example: ``node->get_parameter("/dev/ttyUSB0", str_optvalue);``
+
+
+      [...]
+      ///lidar port
+      std::string str_optvalue = "/dev/ttyUSB0";
+      node->get_parameter(  "/dev/ttyUSB0"  , str_optvalue);
+      laser.setlidaropt(LidarPropSerialPort, str_optvalue.c_str(),   str_optvalue.size());
+      [...]
       /// lidar baudrate
       int optval = 115200;
-      node->get_parameter( "115200" , optval);
+      node->get_parameter(  "115200"  , optval);
       laser.setlidaropt(LidarPropSerialBaudrate, &optval, sizeof(int));
-
-
+      [...]
+      /// one-way communication
+      b_optvalue = true;
+      node->get_parameter(   "true"   , b_optvalue);
+      laser.setlidaropt(LidarPropSingleChannel, &b_optvalue, sizeof(bool));
+      [...]
 
 
 ## Run ydlidar_ros2_driver
