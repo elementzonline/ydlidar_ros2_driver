@@ -64,31 +64,35 @@ ydlidar_ros2_driver depends on YDLidar-SDK library. If you have never installed 
     ```
     Note: After completing the previous operation, replug the LiDAR again.
 	
-## Configure LiDAR [paramters](params/ydlidar.yaml)
+## Configure LiDAR
 ```
-ydlidar_ros2_driver_node:
-  ros__parameters:
-    port: /dev/ttyUSB0
-    frame_id: laser_frame
-    ignore_array: ""
-    baudrate: 230400
-    lidar_type: 1
-    device_type: 0
-    sample_rate: 9
-    abnormal_check_count: 4
-    resolution_fixed: true
-    reversion: true
-    inverted: true
-    auto_reconnect: true
-    isSingleChannel: false
-    intensity: false
-    support_motor_dtr: false
-    angle_max: 180.0
-    angle_min: -180.0
-    range_max: 64.0
-    range_min: 0.01
-    frequency: 10.0
-    invalid_range_is_inf: false
+std::string str_optvalue = "/dev/ttyUSB0";
+ // node->declare_parameter<std::string>("port");
+  node->get_parameter("/dev/ttyUSB0", str_optvalue);
+  ///lidar port
+  laser.setlidaropt(LidarPropSerialPort, str_optvalue.c_str(),       
+   str_optvalue.size());
+
+
+  std::string frame_id = "laser_frame";
+  //node->declare_parameter<std::string>("frame_id");
+  node->get_parameter("frame_id", frame_id);
+
+  /// lidar baudrate
+  int optval = 115200;
+  //node->declare_parameter<int>("baudrate");
+  node->get_parameter("115200", optval);
+  laser.setlidaropt(LidarPropSerialBaudrate, &optval, sizeof(int));
+  /// tof lidar
+  optval = TYPE_TOF;
+  //node->declare_parameter<int>("lidar_type");
+  node->get_parameter("TYPE_TOF", optval);
+  laser.setlidaropt(LidarPropLidarType, &optval, sizeof(int));
+  /// device type
+  optval = YDLIDAR_TYPE_SERIAL;
+  //node->declare_parameter<int>("device_type");
+  node->get_parameter("YDLIDAR_TYPE_SERIAL", optval);
+  laser.setlidaropt(LidarPropDeviceType, &optval, sizeof(int));
 ```
 
 ## Run ydlidar_ros2_driver
